@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>suro.me - private URL shortener</title>
+</head>
+<body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+    $( document ).ready(function() {
+ 
+        $( "#do_button" ).click(function( event ) {
+            doAjax()
+        });
+
+        function doAjax(){
+            $.ajax({
+              url: "/add",
+              method: "POST",
+              context: document.body,
+              data: ({'url': $('#url').val()}),
+              dataType: "json",
+              success: function(response) {respond(response)}
+            }).done(function() {
+              $( this ).addClass( "done" );
+            });
+        }
+ 
+        function respond(response){
+            status = response['status']
+            console.log(status)
+            if ( status == 'OK') {
+                isOK(response)
+            } else {
+                isBad(response)
+            }
+        }
+
+        function isOK(response){
+            $("body").append(
+                "<div>" + 
+                "<a href=\"https://suro.me/" + response['rid'] + "\">https://suro.me/"+response['rid']+"</a>"
+                )
+        }
+
+        function isBad(){
+            alert('Haha!')
+        }
+
+    });
+    </script>
+    <form id='add_form'>
+        <input id="url" type="text" size="30" />
+        <button id="do_button" type="button"> Make it shorter! </button>
+    </form>
+</body>
+</html>
